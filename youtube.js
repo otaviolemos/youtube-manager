@@ -3,7 +3,7 @@ const google = require('googleapis').google
 const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
 
-async function run() {
+async function runmanager() {
   await authenticateWithOAuth()
 }
 
@@ -15,6 +15,8 @@ async function authenticateWithOAuth() {
   await requestGoogleForAccessTokens(OAuthClient, authorizationToken)
   await setGlobalGoogleAuthentication(OAuthClient)
   await stopWebServer(webServer)
+  const addedPlayList = await addPlaylists([])
+
 
   async function startWebServer() {
     return new Promise((resolve, reject) => {
@@ -22,7 +24,7 @@ async function authenticateWithOAuth() {
       const app = express()
 
       const server = app.listen(port, () => {
-        console.log(`> [youtube-robot] Listening on http://localhost:${port}`)
+        console.log(`> [youtube-manager] Listening on http://localhost:${port}`)
 
         resolve({
           app,
@@ -33,7 +35,7 @@ async function authenticateWithOAuth() {
   }
 
   async function createOAuthClient() {
-    const credentials = require('../credentials/google-youtube.json')
+    const credentials = require('./credentials/google-youtube.json')
 
     const OAuthClient = new OAuth2(
       credentials.web.client_id,
@@ -50,16 +52,16 @@ async function authenticateWithOAuth() {
       scope: ['https://www.googleapis.com/auth/youtube']
     })
 
-    console.log(`> [youtube-robot] Please give your consent: ${consentUrl}`)
+    console.log(`> [youtube-manager] Please give your consent: ${consentUrl}`)
   }
 
   async function waitForGoogleCallback(webServer) {
     return new Promise((resolve, reject) => {
-      console.log('> [youtube-robot] Waiting for user consent...')
+      console.log('> [youtube-manager] Waiting for user consent...')
 
       webServer.app.get('/oauth2callback', (req, res) => {
         const authCode = req.query.code
-        console.log(`> [youtube-robot] Consent given: ${authCode}`)
+        console.log(`> [youtube-manager] Consent given: ${authCode}`)
 
         res.send('<h1>Thank you!</h1><p>Now close this tab.</p>')
         resolve(authCode)
@@ -74,7 +76,7 @@ async function authenticateWithOAuth() {
           return reject(error)
         }
 
-        console.log('> [youtube-robot] Access tokens received!')
+        console.log('> [youtube-manager] Access tokens received!')
 
         OAuthClient.setCredentials(tokens)
         resolve()
@@ -88,6 +90,25 @@ async function authenticateWithOAuth() {
     })
   }
 
+  async function addPlaylists(playLists) {
+    const youtubeResponse = await youtube.playlists.insert({
+      part: 'snippet,status',
+      resource: {
+        snippet: {
+          title: 'Test Playlist - Otavio',
+          description: 'A private playlist created with the YouTube API'
+        },
+        status: {
+          privacyStatus: 'public'
+        }
+      }
+    });
+
+    console.log('> [youtube-manager] Playlist added.')
+    console.log(youtubeResponse)
+    return youtubeResponse.data
+  }
+
   async function stopWebServer(webServer) {
     return new Promise((resolve, reject) => {
       webServer.server.close(() => {
@@ -97,4 +118,4 @@ async function authenticateWithOAuth() {
   }
 }
 
-module.exports = run
+module.exports = runmanager
