@@ -3,6 +3,10 @@ const google = require('googleapis').google
 const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
 
+async function run() {
+  await authenticateWithOAuth()
+}
+
 async function authenticateWithOAuth() {
   const webServer = await startWebServer()
   const OAuthClient = await createOAuthClient()
@@ -92,3 +96,5 @@ async function authenticateWithOAuth() {
     })
   }
 }
+
+module.exports = run
