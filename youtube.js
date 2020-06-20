@@ -118,4 +118,20 @@ async function authenticateWithOAuth() {
   }
 }
 
+function jsonPLFromName(name) {
+  const jsonPLString = `{
+    "part": "snippet,status",
+    "resource": {
+      "snippet": {
+        "title": "${name}"
+      },
+      "status": {
+        "privacyStatus": "public"
+      }
+    }
+  }`
+  return JSON.parse(jsonPLString)
+}
+
 module.exports = runmanager
+module.exports = jsonPLFromName
