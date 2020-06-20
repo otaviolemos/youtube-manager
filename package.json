@@ -4,7 +4,7 @@
   "description": "Script to create a playlist in a YouTube channel",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "run": "node index.js"
   },
   "author": "",
