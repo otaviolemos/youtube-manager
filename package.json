@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "express": "^4.17.1",
-    "googleapis": "^52.1.0"
+    "googleapis": "^52.1.0",
+    "jest": "^26.0.1"
   }
 }
