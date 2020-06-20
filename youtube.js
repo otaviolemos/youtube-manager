@@ -16,7 +16,8 @@ async function authenticateWithOAuth() {
   await requestGoogleForAccessTokens(OAuthClient, authorizationToken)
   setGlobalGoogleAuthentication(OAuthClient)
   await stopWebServer(webServer)
-  const addedPlayList = await addPlaylists(getAllNames())
+  let names = await getAllNames()
+  const addedPlayList = await addPlaylists(names)
 
 
   async function startWebServer() {
@@ -93,9 +94,15 @@ async function authenticateWithOAuth() {
 
   async function addPlaylists(names) {
     for(i = 0; i < 2; i++) {
-      const youtubeResponse = await youtube.playlists.insert(jsonPLFromName(names[i]))
+      var youtubeResponse;
+      try {
+        youtubeResponse = await youtube.playlists.insert(jsonPLFromName(names[i]))
+      } catch(err) {
+        console.log('Could not add playlist.')
+        return youtubeResponse
+      }
       console.log(`> [youtube-manager] Playlist ${names[i]} added.`)
-      console.log(youtubeResponse)
+      await sleep(10000)
     }
     return youtubeResponse
   }
@@ -124,5 +131,9 @@ function jsonPLFromName(name) {
   return JSON.parse(jsonPLString)
 }
 
-module.exports = runmanager
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = jsonPLFromName
+module.exports = runmanager
