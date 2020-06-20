@@ -2,6 +2,7 @@ const express = require('express')
 const google = require('googleapis').google
 const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
+const getAllNames = require('./filereader.js')
 
 async function runmanager() {
   await authenticateWithOAuth()
@@ -13,9 +14,9 @@ async function authenticateWithOAuth() {
   requestUserConsent(OAuthClient)
   const authorizationToken = await waitForGoogleCallback(webServer)
   await requestGoogleForAccessTokens(OAuthClient, authorizationToken)
-  await setGlobalGoogleAuthentication(OAuthClient)
+  setGlobalGoogleAuthentication(OAuthClient)
   await stopWebServer(webServer)
-  const addedPlayList = await addPlaylists([])
+  const addedPlayList = await addPlaylists(getAllNames())
 
 
   async function startWebServer() {
@@ -90,23 +91,13 @@ async function authenticateWithOAuth() {
     })
   }
 
-  async function addPlaylists(playLists) {
-    const youtubeResponse = await youtube.playlists.insert({
-      part: 'snippet,status',
-      resource: {
-        snippet: {
-          title: 'Test Playlist - Otavio',
-          description: 'A private playlist created with the YouTube API'
-        },
-        status: {
-          privacyStatus: 'public'
-        }
-      }
-    });
-
-    console.log('> [youtube-manager] Playlist added.')
-    console.log(youtubeResponse)
-    return youtubeResponse.data
+  async function addPlaylists(names) {
+    for(i = 0; i < 2; i++) {
+      const youtubeResponse = await youtube.playlists.insert(jsonPLFromName(names[i]))
+      console.log(`> [youtube-manager] Playlist ${names[i]} added.`)
+      console.log(youtubeResponse)
+    }
+    return youtubeResponse
   }
 
   async function stopWebServer(webServer) {
