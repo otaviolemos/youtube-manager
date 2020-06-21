@@ -18,4 +18,20 @@ async function getAllNames() {
   return names
 }
 
-module.exports = getAllNames
+function jsonPLFromName(name) {
+  const jsonPLString = `{
+    "part": "snippet,status",
+    "resource": {
+      "snippet": {
+        "title": "${name}"
+      },
+      "status": {
+        "privacyStatus": "public"
+      }
+    }
+  }`
+  return JSON.parse(jsonPLString)
+}
+
+exports.getAllNames = getAllNames
+exports.jsonPLFromName = jsonPLFromName
