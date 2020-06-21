@@ -2,7 +2,7 @@ const express = require('express')
 const google = require('googleapis').google
 const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
-const getAllNames = require('./filereader.js')
+const util = require('./util.js')
 
 async function runmanager() {
   await authenticateWithOAuth()
@@ -16,7 +16,7 @@ async function authenticateWithOAuth() {
   await requestGoogleForAccessTokens(OAuthClient, authorizationToken)
   setGlobalGoogleAuthentication(OAuthClient)
   await stopWebServer(webServer)
-  let names = await getAllNames()
+  let names = await util.getAllNames()
   const addedPlayList = await addPlaylists(names)
 
 
@@ -93,10 +93,10 @@ async function authenticateWithOAuth() {
   }
 
   async function addPlaylists(names) {
-    for(i = 10; i < names.length; i++) {
+    for(i = 10; i < 11/*names.length*/; i++) {
       var youtubeResponse;
       try {
-        youtubeResponse = await youtube.playlists.insert(jsonPLFromName(names[i]))
+        youtubeResponse = await youtube.playlists.insert(util.jsonPLFromName(names[i]))
       } catch(err) {
         console.log('Could not add playlist.')
         console.log(err)
@@ -115,21 +115,6 @@ async function authenticateWithOAuth() {
       })
     })
   }
-}
-
-function jsonPLFromName(name) {
-  const jsonPLString = `{
-    "part": "snippet,status",
-    "resource": {
-      "snippet": {
-        "title": "${name}"
-      },
-      "status": {
-        "privacyStatus": "public"
-      }
-    }
-  }`
-  return JSON.parse(jsonPLString)
 }
 
 function sleep(ms) {
