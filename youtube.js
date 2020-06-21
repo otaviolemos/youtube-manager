@@ -93,12 +93,13 @@ async function authenticateWithOAuth() {
   }
 
   async function addPlaylists(names) {
-    for(i = 0; i < 2; i++) {
+    for(i = 10; i < names.length; i++) {
       var youtubeResponse;
       try {
         youtubeResponse = await youtube.playlists.insert(jsonPLFromName(names[i]))
       } catch(err) {
         console.log('Could not add playlist.')
+        console.log(err)
         return youtubeResponse
       }
       console.log(`> [youtube-manager] Playlist ${names[i]} added.`)
