@@ -103,7 +103,6 @@ async function authenticateWithOAuth() {
         return youtubeResponse
       }
       console.log(`> [youtube-manager] Playlist ${names[i]} added.`)
-      await sleep(10000)
     }
     return youtubeResponse
   }
@@ -115,10 +114,6 @@ async function authenticateWithOAuth() {
       })
     })
   }
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = runmanager
