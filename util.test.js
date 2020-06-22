@@ -1,7 +1,7 @@
 const util = require('./util.js')
 
 
-test('get all lines from playlist names file', async () => {
+test('get all lines from the playlist names file', async () => {
   const lines = await util.getAllNames()
   expect(lines[0]).toBe('I1 - Metastudies')
   expect(lines[59]).toBe('POSTERS')
