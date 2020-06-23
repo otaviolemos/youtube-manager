@@ -93,7 +93,7 @@ async function authenticateWithOAuth() {
   }
 
   async function addPlaylists(names) {
-    for(i = 20; i < 30; i++) {
+    for(i = 30; i < 40; i++) {
       var youtubeResponse;
       try {
         youtubeResponse = await youtube.playlists.insert(util.jsonPLFromName(names[i]))
