@@ -16,7 +16,7 @@ async function authenticateWithOAuth() {
   await requestGoogleForAccessTokens(OAuthClient, authorizationToken)
   setGlobalGoogleAuthentication(OAuthClient)
   await stopWebServer(webServer)
-  let names = await util.getAllNames()
+  let names = await util.getAllLines('./resources/playlist-names.txt')
   const addedPlayList = await addPlaylists(names)
 
 
@@ -93,7 +93,7 @@ async function authenticateWithOAuth() {
   }
 
   async function addPlaylists(names) {
-    for(i = 30; i < 40; i++) {
+    for(i = 50; i < names.length; i++) {
       var youtubeResponse;
       try {
         youtubeResponse = await youtube.playlists.insert(util.jsonPLFromName(names[i]))
