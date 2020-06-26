@@ -57,4 +57,3 @@ A27 - Software Architecture
 A28 - Android and Web Testing
 A29 - Code Analysis and Verification
 A30 - Dependencies and Configuration
-POSTERS
