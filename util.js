@@ -1,17 +1,17 @@
 const fs = require('fs')
 const readline = require('readline')
 
-async function getAllNames() {
-  const fileStream = fs.createReadStream('resources/playlist-names.txt')
+async function getAllLines(file) {
+  const fileStream = fs.createReadStream(file)
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity
   })
-  var names = []
+  var lines = []
   for await (const line of rl) {
-    names.push(line)
+    lines.push(line)
   }
-  return names
+  return lines
 }
 
 function jsonPLFromName(name) {
@@ -29,5 +29,5 @@ function jsonPLFromName(name) {
   return JSON.parse(jsonPLString)
 }
 
-exports.getAllNames = getAllNames
+exports.getAllLines = getAllLines
 exports.jsonPLFromName = jsonPLFromName
